@@ -1,0 +1,48 @@
+contracts_tape:
+  - method: count_by_column_validation
+    params:
+      count_column: contract_id
+      agg_column: created_at
+      database_table: contracts_tape
+      datalake_table: contracts_tape_datalake
+      where_max_value_condition: where created_at <= '{max_value}'::date
+      max_col: created_at
+      validation: contracts_by_created_at_dp_db
+      create_table: True
+  
+  - method: validate_schema
+    params:
+      database_table: contracts_tape
+      datalake_table: contracts_tape_datalake
+      validation: schema_dp_contracts_tape
+
+  - method: validate_schema
+    params:
+      database_table: contracts_tape
+      datalake_table: contracts_tape_datalake
+      validation: schema_dp_contracts_tape
+
+  - method: check_null_column
+    params:
+      table: contracts_tape_datalake
+      threshold: 30
+      null_column: car_brand
+      where_condition:
+      validation: check_null_car_brand_datalake
+  
+  
+contracts_test_02:
+  - method: check_duplicates
+    params:
+      column: contract_id
+      table: contracts_tape
+      where_condition:
+      validation: check_duplicates_dp_db
+  
+  - method: check_duplicates
+    params:
+      column: contract_id
+      table: contracts_tape_datalake
+      where_condition:
+      validation: check_duplicates_dp_lake
+
