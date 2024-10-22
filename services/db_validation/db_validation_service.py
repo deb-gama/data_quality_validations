@@ -1,11 +1,15 @@
-import yaml
+import sys
 import os
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+sys.path.append(project_root)
+
+import yaml
 import pytz
 import pandas as pd
 from datetime import datetime
-from queries import count_by_column, get_max_value, schema_query, check_null_limit, check_duplicates
-from slack import send_slack_message
-from postgres import query_to_dataframe, connect_postgres_engine,create_or_append_table
+from services.db_validation.queries import count_by_column, get_max_value, schema_query, check_null_limit, check_duplicates
+from services.slack import send_slack_message
+from services.postgres import query_to_dataframe, connect_postgres_engine,create_or_append_table
 
 
 class DBValidation:
@@ -67,6 +71,7 @@ class DBValidation:
         if where_max_value_condition:
             max_value = query_to_dataframe(get_max_value.format(max_col=max_col, table=datalake_table),self.db_to_query_config)
             where_max_value_condition = where_max_value_condition.format(max_value = max_value['max'].iloc[0])
+
 
         dl_query = count_by_column.format(count_column=count_column, agg_column= agg_column,table = datalake_table,where_max_value_condition="")
         db_query = count_by_column.format(count_column=count_column, agg_column= agg_column,table = database_table,where_max_value_condition=where_max_value_condition)

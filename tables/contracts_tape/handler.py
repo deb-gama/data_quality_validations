@@ -1,4 +1,8 @@
+import sys
 import os
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+sys.path.append(project_root)
+
 from services.db_validation.db_validation_service import DBValidation
 
 
@@ -11,7 +15,7 @@ def main():
         'database': os.environ.get('DB_NAME'),
         'user': os.environ.get('DB_USER'),
         'password': os.environ.get('DB_PASSWORD'),
-        'port': os.environ.get('DB_PORT')
+        'port': os.environ.get('PORT')
     }
     validator = DBValidation('contracts_tape_config.yaml',db_to_query= config_db_dict, db_to_save_config= config_db_dict, bot_token= slack_token, report_channel = slack_channel)
     validator.run_validations_from_yaml()
